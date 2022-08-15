@@ -1,12 +1,27 @@
 import datetime
-
+from distutils.command.upload import upload
 from django.db import models
 from django.utils import timezone
+#from django.contrib.auth import User
+from django.contrib.auth.models import User
+
+
+
+class UserProfileInfo(models.Model):
+
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    profile_pic = models.ImageField(upload_to='profile_pics',blank=True)
+    
+    
+   
+
 
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
+    limit = models.DateTimeField('Deadline')
+
 
     def __str__(self):
         return self.question_text
@@ -24,6 +39,8 @@ class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
+    
+    
 
     def __str__(self):
         return self.choice_text

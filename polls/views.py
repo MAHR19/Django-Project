@@ -9,6 +9,9 @@ from pdb import set_trace
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
+    #votes = {'votos_totales' : 'total'}
+   
+
 
     def get_queryset(self):
         """
@@ -38,6 +41,7 @@ class ResultsView(generic.DetailView):
 
 def vote(request, question_id):
     #set_trace()
+    
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
@@ -55,3 +59,8 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
         #return redirect('polls:results', question_id)
+
+
+
+
+    
