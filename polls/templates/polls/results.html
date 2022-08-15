@@ -1,11 +1,12 @@
 <h1>{{ question.question_text }}</h1>
-
+<h1> LIMITE PARA RESPONDER </h1>
+<h2>{{ question.deadline }}</h2>
 <ul>
 {% for choice in question.choice_set.all %}
     <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
 {% endfor %}
 </ul>
-<h2>LIMITE PARA RESPONDER</h2>
+
 
 
 <a href="{% url 'polls:detail' question.id %}">Vote again?</a>

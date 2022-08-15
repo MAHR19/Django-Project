@@ -1,10 +1,14 @@
 import datetime
 from distutils.command.upload import upload
+import time
 from django.db import models
 from django.utils import timezone
 #from django.contrib.auth import User
 from django.contrib.auth.models import User
 
+
+def date_limit():#One Week for each Question POll
+    return timezone.now()+ datetime.timedelta(days=7)
 
 
 class UserProfileInfo(models.Model):
@@ -20,15 +24,17 @@ class UserProfileInfo(models.Model):
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
-    limit = models.DateTimeField('Deadline')
+    deadline = models.DateTimeField(default=date_limit)
 
-
+    
     def __str__(self):
         return self.question_text
 
     def was_published_recently(self):
         now = timezone.now()
         return now - datetime.timedelta(days=1) <= self.pub_date <= now
+
+
     
     was_published_recently.admin_order_field = 'pub_date'
     was_published_recently.boolean = True
