@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 #from django.contrib.auth import User
 from django.contrib.auth.models import User
+from django.db.models import Sum
 
 
 def date_limit():#One Week for each Question POll
@@ -17,16 +18,16 @@ class UserProfileInfo(models.Model):
     profile_pic = models.ImageField(upload_to='profile_pics',blank=True)
     
     
-   
-
-
-
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
     deadline = models.DateTimeField(default=date_limit)
 
-    
+    def total_votes(self):
+        sum = Choice.objects.aggregate(Sum('votes'))['votes__sum']
+        #return self.choice_set.aggregate(Sum('votes'))['votes__sum']
+        return sum
+
     def __str__(self):
         return self.question_text
 
@@ -46,7 +47,9 @@ class Choice(models.Model):
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
     
-    
+    """def total(self):
+        return sum([self.votes for self.choice_text in self.objects.all()])"""
+        
 
     def __str__(self):
         return self.choice_text

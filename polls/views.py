@@ -1,3 +1,4 @@
+
 from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import get_object_or_404, render,redirect
 from django.urls import reverse
@@ -5,14 +6,13 @@ from django.utils import timezone
 from django.views import generic
 from .models import Choice, Question
 from pdb import set_trace
+from django.db.models import Sum
+
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
-    #votes = {'votos_totales' : 'total'}
-    
-
-
+   
     def get_queryset(self):
         """
         Return the last five published questions (not including those set to be
@@ -41,7 +41,7 @@ class ResultsView(generic.DetailView):
 
 def vote(request, question_id):
     #set_trace()
-    
+
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
@@ -52,6 +52,7 @@ def vote(request, question_id):
             'error_message': "You didn't select a choice.",
         })
     else:
+        #total = sum([selected_choice.votes for question in question.objects.all()])
         selected_choice.votes = selected_choice.votes + 1
         selected_choice.save()
         # Always return an HttpResponseRedirect after successfully dealing
@@ -59,8 +60,3 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
         #return redirect('polls:results', question_id)
-
-
-
-
-    
