@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, render,redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
+from django.template import loader 
 from .models import Choice, Question
 from pdb import set_trace
 from django.db.models import Sum
@@ -13,6 +14,9 @@ class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
    
+
+    
+
     def get_queryset(self):
         """
         Return the last five published questions (not including those set to be
@@ -60,3 +64,10 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
         #return redirect('polls:results', question_id)
+
+def showtotal(request):
+        template = loader.get_template('polls/detail.html')
+        context = {
+            'total':'numero',
+        }
+        return HttpResponse(template.render(context, request))
