@@ -22,16 +22,32 @@
 
   <div class="container-fluid p-0 ">
       <nav class="navbar navbar-expand-sm bg-dark navbar-dark shadow-sm">
-        <a class="navbar-brand ali" href="{% url 'polls:index' %}"> POLLS </a>
+        <li class="nav-item m-1">
+          <a class="navbar-brand ali " href="{% url 'polls:index' %}"> POLLS </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-light text-white" href="{% url 'polls:register' %}">Register</a>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link fw-light text-white" href="{% url 'polls:logout' %}">Logout</a>
+        </li>
+        <h1 class="nav-link fw-light text-white ms-auto">{{user.username}}</h1>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link fw-light text-white" href="{% url 'polls:login_user' %}">Login</a>
+        </li>
+        {% endif %}
       </nav>
   </div>
 
   <div class="container-fluid p-0">
       <div class="container-fluid p-3 text-center">
+        <h2 class="h2">{{Register}}</h2>
           <h2 class="h2">Select the question where you want to vote</h2>
           <div class="container-fluid p-0">
               {% if latest_question_list %}
-                <h2 class="h2">Number of votes: {{question.total_votes}}</h2>
+                <h2 class="h2">Number of votes: {{votos}}</h2>
                 <div class="list-group">
                   {% for question in latest_question_list%}
                     <a href="{% url 'polls:detail' question.id %}" class="list-group-item list-group-item-action" aria-current="true">{{question.question_text}}</a>

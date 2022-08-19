@@ -6,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db.models import Sum
-
+from django import forms    
 
 def date_limit():#One Week for each Question POll
     return timezone.now()+ datetime.timedelta(days=7)
@@ -16,6 +16,7 @@ class UserProfileInfo(models.Model):
 
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic = models.ImageField(upload_to='profile_pics',blank=True)
+    email = models.EmailField(default = 'someone@sample.com')
 
 
 class Question(models.Model):
@@ -30,8 +31,8 @@ class Question(models.Model):
             obj.delete()
 
     def total_votes(self):
-        sum = Choice.objects.aggregate(Sum('votes'))['votes__sum']
-        return sum
+        return Choice.objects.aggregate(Sum('votes'))['votes__sum']
+
 
     def __str__(self):
         return self.question_text

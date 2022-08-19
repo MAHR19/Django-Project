@@ -4,18 +4,62 @@ from django.shortcuts import get_object_or_404, render,redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
-from django.template import loader 
+from django.template import loader
 from .models import Choice, Question
-from pdb import set_trace
 from django.db.models import Sum
+from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.decorators import login_required
+from .forms import UserForm
+from pdb import set_trace
+
+
+
+def login_user(request):
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request,user)
+            return HttpResponseRedirect(reverse('polls:index'))
+        else:
+            messages.info(request, 'INVALID DATA')
+    else:
+        return render(request, 'polls/login.html')
+
+
+
+
+
+
+@login_required
+def logoutView(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('polls:index'))
+
+
+
+
+def RegistrationView(request):
+    #template = loader.get_template('polls/registration.html')
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+        return redirect('polls:index')
+    else:
+        form = UserForm()
+    return render(request, 'polls/registration.html',{'User_Form': form,} )
+
+
 
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
-   
 
-    
 
     def get_queryset(self):
         """
@@ -42,7 +86,7 @@ class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
 
-
+@login_required
 def vote(request, question_id):
     #set_trace()
 
@@ -64,10 +108,3 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
         #return redirect('polls:results', question_id)
-
-def showtotal(request):
-        template = loader.get_template('polls/detail.html')
-        context = {
-            'total':'numero',
-        }
-        return HttpResponse(template.render(context, request))
