@@ -6,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db.models import Sum
-from django import forms    
+from django import forms
 
 def date_limit():#One Week for each Question POll
     return timezone.now()+ datetime.timedelta(days=7)
@@ -18,12 +18,15 @@ class UserProfileInfo(models.Model):
     profile_pic = models.ImageField(upload_to='profile_pics',blank=True)
     email = models.EmailField(default = 'someone@sample.com')
 
+    def __str__(self):
+        return self.username
 
 class Question(models.Model):
 
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
     deadline = models.DateTimeField(default=date_limit)
+
 
     def is_out_of_time(self):
         if timezone.now()>=self.deadline:
@@ -46,10 +49,20 @@ class Question(models.Model):
     was_published_recently.short_description = 'Published recently?'
 
 
+
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
 
+
     def __str__(self):
         return self.choice_text
+
+
+
+class Vote(models.Model):
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, default=None,  null=True)
+    Voter_username = models.CharField(max_length=30, default='anonimus user')
+    num_votes = models.IntegerField(default=0)

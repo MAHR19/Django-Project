@@ -25,12 +25,22 @@
   <div class="container-fluid p-0 ">
       <nav class="navbar navbar-expand-sm bg-dark navbar-dark shadow-sm">
         <a class="navbar-brand ali" href="{% url 'polls:index' %}"> POLLS </a>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link fw-light text-white" href="{% url 'polls:logout' %}">Logout</a>
+        </li>
+        <a class="nav-link fw-light text-white ms-auto" href="{% url 'polls:my_profile' %}">{{user.username}}</a>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link fw-light text-white" href="{% url 'polls:login_user' %}">Login</a>
+        </li>
+        {% endif %}
       </nav>
   </div>
 
   <div class="container-fluid p-3 text-center">
       <h3 class="h3"> You are about to vote in the Poll: {{question.question_text}} </h3>
-
+      
       <div class="container-fluid p-3 text-center">
           <h2 class="h2 ">Deadline in this poll</h2>
           <h3 class="h3">{{question.deadline}}</h3>
@@ -43,7 +53,7 @@
       <div class="container-fluid p-0">
         <h2 class="h2 p-3"> Just select a choice</h2>
         {% if error_message %}<h1 class="h1"><strong>{{ error_message }}</strong></h1>{% endif %}
-        <form class="container-fluid p-3" action="{% url 'polls:vote' question.id %}" method="post">
+        <form class="container-fluid p-3" action="{% url 'polls:vote' question.id  %}" method="post">
           <div class="d-flex justify-content-center ">
         {% csrf_token %}
         <fieldset class="row-mb-3">

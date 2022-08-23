@@ -32,7 +32,7 @@
         <li class="nav-item">
           <a class="nav-link fw-light text-white" href="{% url 'polls:logout' %}">Logout</a>
         </li>
-        <h1 class="nav-link fw-light text-white ms-auto">{{user.username}}</h1>
+        <a class="nav-link fw-light text-white ms-auto" href="{% url 'polls:my_profile' %}">{{user.username}}</a>
         {% else %}
         <li class="nav-item">
           <a class="nav-link fw-light text-white" href="{% url 'polls:login_user' %}">Login</a>
