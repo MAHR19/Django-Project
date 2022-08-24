@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django import forms
 
 def date_limit():#One Week for each Question POll
@@ -41,11 +41,12 @@ class Question(models.Model):
         q_c = Choice.objects.filter(question = q).aggregate(Sum('votes'))['votes__sum']
         return q_c
 
-    
+
     def user_votes(self):
         q = self.id
         votes_objects = Vote.objects.filter(question = q)
-        return votes_objects
+        votes_list = Vote.objects.filter(question = q).values('Voter_username').annotate(Count('id'))
+        return votes_list
 
     def __str__(self):
         return self.question_text
