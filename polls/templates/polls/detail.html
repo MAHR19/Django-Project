@@ -1,16 +1,4 @@
-<!--<h1>{{ question.question_text }}</h1>
-<h1> LIMITE PARA RESPONDER </h1>
-<h2>{{ question.deadline }}</h2>
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-<form action="{% url 'polls:vote' question.id %}" method="post">
-{% csrf_token %}
-{% for choice in question.choice_set.all %}
-    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
-{% endfor %}
-<h2>Votes in total: {{ total}}</h2>
-<input type="submit" value="Vote">
-</form> -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,9 +8,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="bg-light">
 
-  <div class="container-fluid p-0 ">
+  <div class="container-fluid p-0">
       <nav class="navbar navbar-expand-sm bg-dark navbar-dark shadow-sm">
         <a class="navbar-brand ali" href="{% url 'polls:index' %}"> POLLS </a>
         {% if user.is_authenticated %}
@@ -38,40 +26,76 @@
       </nav>
   </div>
 
-  <div class="container-fluid p-3 text-center">
-      <h3 class="h3"> You are about to vote in the Poll: {{question.question_text}} </h3>
-      
-      <div class="container-fluid p-3 text-center">
-          <h2 class="h2 ">Deadline in this poll</h2>
-          <h3 class="h3">{{question.deadline}}</h3>
-      </div>
+  <div class="container px-4 p-5">
+      <div class="row gx-5">
 
-      <div class="container-fluid p-3 text-center">
-          <h2 class="h2 ">Total of votes: {{question.total_votes}}</h2>
-      </div>
+        <div class="col-sm-6 col-md-8 border rounded bg-white">
+          <div class="p-5">
+            <h1 class="h1 text-start">{{question.question_text}}</h1>
+            <p class="text-end"> Deadline in this poll {{question.deadline}}</p>
 
-      <div class="container-fluid p-0">
-        <h2 class="h2 p-3"> Just select a choice</h2>
-        {% if error_message %}<h1 class="h1"><strong>{{ error_message }}</strong></h1>{% endif %}
-        <form class="container-fluid p-3" action="{% url 'polls:vote' question.id  %}" method="post">
-          <div class="d-flex justify-content-center ">
-        {% csrf_token %}
-        <fieldset class="row-mb-3">
-        <div class="col-sm-10">
-        {% for choice in question.choice_set.all %}
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="choice"  id="choice{{ forloop.counter }}" value="{{ choice.id }}"checked>
-          <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+
+
+            <div class="list-group">
+              <form action="{% url 'polls:vote' question.id %}" method="post">
+                {% csrf_token %}
+              {%for choice in question.choice_set.all%}
+              <div class="list-group-item">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="choice"  id="choice{{ forloop.counter }}" value="{{ choice.id }}"checked>
+                  <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+                </div>
+              </div>
+              {%endfor%}
+              {%if question.is_out_of_time == False %}
+                      <p class="h6 p-2">this poll is no longer available for voting</p>
+                      <div class="d-flex justify-content-end p-3">
+                          <input  class="btn btn-outline-dark"type="submit" value="Submit your vote" disabled>
+                      </div>
+                {%else%}
+                <div class="d-flex justify-content-end p-3">
+                    <input  class="btn btn-outline-dark"type="submit" value="Submit your vote">
+                </div>
+              {%endif%}
+              <!--<div class="d-flex justify-content-end p-3">
+                  <input  class="btn btn-outline-dark"type="submit" value="Submit your vote">
+              </div> -->
+              </form>
+            </div>
+
+          </div>
         </div>
-        {% endfor %}
+
+        <div class="col-sm border rounded bg-white ms-5 w-50">
+          <div class="p-5">
+            <p class="h6">Votes in this poll</p>
+            <h3 class="h3">{{question.total_votes}}</h3>
+            <div class="border border-dark"></div>
+
+            <div class="container p-3">
+              <p class="fs-6">This users already have vote</p>
+            </div>
+
+            <div class="list-group">
+              {%for user in question.user_votes%}
+                <li class="list-group-item fs-6">{{user.Voter_username}}</li>
+              {%endfor%}
+            </div>
+
           </div>
-          </fieldset>
           </div>
-          <div class="container-fluid p-5">
-              <input  class="btn btn-outline-dark"type="submit" value="Vote">
-          </div>
-        </form>
+        </div>
+
+
       </div>
-  </div>
+
 </body>
 </html>
+<!-- <div class="d-flex justify-content-center p-3">
+  <ul class="list-group list-group-flush border">
+      <li class="list-group-item list-group-item-dark""> This users have already vote</li>
+    {% for user in question.user_votes %}
+      <li class="list-group-item"> {{user.Voter_username}}</li>
+    {% endfor %}
+  </ul>
+</div> -->

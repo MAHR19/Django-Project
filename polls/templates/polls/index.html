@@ -47,15 +47,15 @@
           <h2 class="h2">Select the question where you want to vote</h2>
           <div class="container-fluid p-0">
               {% if latest_question_list %}
-                <h2 class="h2">Number of votes: {{votos}}</h2>
                 <div class="list-group">
                   {% for question in latest_question_list%}
-                    <a href="{% url 'polls:detail' question.id %}" class="list-group-item list-group-item-action" aria-current="true">{{question.question_text}}</a>
+                    <a href="{% url 'polls:detail' question.id %}" class="list-group-item list-group-item-action" aria-current="true">{{question.question_text}} this polls have: {{question.total_votes}} votes</a>
                   {% endfor %}
                 </div>
               {% else %}
               {% endif %}
           </div>
+
       </div>
   </div>
 

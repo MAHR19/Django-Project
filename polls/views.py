@@ -11,9 +11,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from .forms import UserForm
 from pdb import set_trace
-
-
-
+import pandas as pd
 
 
 
@@ -33,12 +31,12 @@ def login_user(request):
     else:
         return render(request, 'polls/login.html')
 
-
-
 @login_required
 def profileview(request):
 
-    votes_list = Vote.objects.filter(Voter_username=request.user.username)
+    votes_list = Vote.objects.filter(Voter_username=request.user.username).order_by('question_id')[:5]
+
+
     #num_questions = Vote.objects.annotate(num=Count('question'))
     return render(request, 'polls/myprofile.html', {'votes_list':votes_list,})
 
@@ -51,6 +49,13 @@ def detailVoteView(request):
 def logoutView(request):
     logout(request)
     return HttpResponseRedirect(reverse('polls:index'))
+
+@login_required
+def allvotesview(request):
+    user=request.user.username
+    votes_list = Vote.objects.filter(Voter_username=request.user.username).order_by('question_id')
+
+
 
 
 def RegistrationView(request):
@@ -72,14 +77,19 @@ class IndexView(generic.ListView):
     context_object_name = 'latest_question_list'
 
 
+    def showtotal(self):
+        votos = Question.total_votes(self)
+        return votos
+
     def get_queryset(self):
         """
         Return the last five published questions (not including those set to be
         published in the future).
         """
-        return Question.objects.filter(
-            pub_date__lte=timezone.now()
-        ).order_by('-pub_date')[:5]
+        latest_question_list = Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
+        return latest_question_list
+
+
 
 
 class DetailView(generic.DetailView):

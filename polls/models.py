@@ -27,15 +27,25 @@ class Question(models.Model):
     pub_date = models.DateTimeField('date published')
     deadline = models.DateTimeField(default=date_limit)
 
-
+#desactiva la opcion de votar si el el deadline es menor a la fecha actual
     def is_out_of_time(self):
-        if timezone.now()>=self.deadline:
-            obj=get_object_or_404(Question, name=self.question_text)
-            obj.delete()
+        time = timezone.now()
+        disabled = True
+
+        if time >= self.deadline:
+            disabled = False
+        return disabled
 
     def total_votes(self):
-        return Choice.objects.aggregate(Sum('votes'))['votes__sum']
+        q = self.id
+        q_c = Choice.objects.filter(question = q).aggregate(Sum('votes'))['votes__sum']
+        return q_c
 
+    
+    def user_votes(self):
+        q = self.id
+        votes_objects = Vote.objects.filter(question = q)
+        return votes_objects
 
     def __str__(self):
         return self.question_text
