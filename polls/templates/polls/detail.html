@@ -12,7 +12,9 @@
 
   <div class="container-fluid p-0">
       <nav class="navbar navbar-expand-sm bg-dark navbar-dark shadow-sm">
-        <a class="navbar-brand ali" href="{% url 'polls:index' %}"> POLLS </a>
+        <li class="nav-item m-1">
+          <a class="navbar-brand ali " href="{% url 'polls:index' %}"> POLLS </a>
+        </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link fw-light text-white" href="{% url 'polls:logout' %}">Logout</a>
@@ -39,7 +41,7 @@
             <div class="list-group">
               <form action="{% url 'polls:vote' question.id %}" method="post">
                 {% csrf_token %}
-              {%for choice in question.choice_set.all%}
+              {% for choice in question.choice_set.all %}
               <div class="list-group-item">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="choice"  id="choice{{ forloop.counter }}" value="{{ choice.id }}"checked>

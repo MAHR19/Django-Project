@@ -8,6 +8,9 @@ from django.contrib.auth.models import User
 from django.db.models import Sum, Count
 from django import forms
 
+
+
+
 def date_limit():#One Week for each Question POll
     return timezone.now()+ datetime.timedelta(days=7)
 
@@ -20,6 +23,9 @@ class UserProfileInfo(models.Model):
 
     def __str__(self):
         return self.username
+
+
+
 
 class Question(models.Model):
 
@@ -44,7 +50,8 @@ class Question(models.Model):
 
     def user_votes(self):
         q = self.id
-        votes_objects = Vote.objects.filter(question = q)
+        #votes_objects = Vote.objects.filter(question = q)
+        #Obtiene la pregunta en cuestion y por medio de la llave foranea obtiene sus registros en Vote
         votes_list = Vote.objects.filter(question = q).values('Voter_username').annotate(Count('id'))
         return votes_list
 
@@ -65,8 +72,7 @@ class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
-
-
+    
     def __str__(self):
         return self.choice_text
 
@@ -77,3 +83,8 @@ class Vote(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, default=None,  null=True)
     Voter_username = models.CharField(max_length=30, default='anonimus user')
     num_votes = models.IntegerField(default=0)
+
+
+
+    def test(self):
+        return 1

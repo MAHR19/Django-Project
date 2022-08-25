@@ -18,38 +18,51 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="">
 
   <div class="container-fluid p-0 ">
       <nav class="navbar navbar-expand-sm bg-dark navbar-dark shadow-sm">
         <li class="nav-item m-1">
           <a class="navbar-brand ali " href="{% url 'polls:index' %}"> POLLS </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link fw-light text-white" href="{% url 'polls:register' %}">Register</a>
-        </li>
         {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link fw-light text-white" href="{% url 'polls:logout' %}">Logout</a>
-        </li>
-        <a class="nav-link fw-light text-white ms-auto" href="{% url 'polls:my_profile' %}">{{user.username}}</a>
+            <li class="nav-item">
+              <a class="nav-link fw-light text-white" href="{% url 'polls:logout' %}">Logout</a>
+            </li>
+            <a class="nav-link fw-light text-white ms-auto" href="{% url 'polls:my_profile' %}">{{user.username}}</a>
         {% else %}
-        <li class="nav-item">
-          <a class="nav-link fw-light text-white" href="{% url 'polls:login_user' %}">Login</a>
-        </li>
+            <li class="nav-item">
+              <a class="nav-link fw-light text-white" href="{% url 'polls:register' %}">Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fw-light text-white" href="{% url 'polls:login_user' %}">Login</a>
+            </li>
         {% endif %}
       </nav>
   </div>
 
-  <div class="container-fluid p-0">
-      <div class="container-fluid p-3 text-center">
-        <h2 class="h2">{{Register}}</h2>
-          <h2 class="h2">Select the question where you want to vote</h2>
-          <div class="container-fluid p-0">
+
+  <div class="container p-5">
+
+
+  <div class="container-fluid p-3  w-75 mt-1">
+
+      <div class="container-fluid">
+          <div class="container-fluid p-2 w-75">
+            <h2 class="h2 text-start ms-3">POLLS</h2>
               {% if latest_question_list %}
-                <div class="list-group">
+                <div class="list-group p-1">
                   {% for question in latest_question_list%}
-                    <a href="{% url 'polls:detail' question.id %}" class="list-group-item list-group-item-action" aria-current="true">{{question.question_text}} this polls have: {{question.total_votes}} votes</a>
+                    <div class="list-group item d-flex justify-content-between">
+                      <div class="ms-2">
+                          <a href="{% url 'polls:detail' question.id %}" class="list-group-item list-group-item-action" aria-current="true">{{question.question_text}}
+                            <div class="d-flex justify-content-end">
+                              <span class="badge bg-dark rounded-pill">Votes: {{question.total_votes}}</span>
+                            </div>
+                          </a>
+
+                      </div>
+                    </div>
                   {% endfor %}
                 </div>
               {% else %}
@@ -57,6 +70,7 @@
           </div>
 
       </div>
+  </div>
   </div>
 
 </body>

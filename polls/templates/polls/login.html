@@ -11,9 +11,11 @@
 
   <div class="container-fluid p-0">
       <nav class="navbar navbar-expand-sm bg-dark navbar-dark shadow-sm">
-        <a class="navbar-brand ali" href="{% url 'polls:index' %}"> POLLS </a>
+        <li class="nav-item m-1">
+          <a class="navbar-brand ali " href="{% url 'polls:index' %}"> POLLS </a>
+        </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'polls:register' %}">Register</a>
+          <a class="nav-link text-white" href="{% url 'polls:register' %}">Register</a>
         </li>
       </nav>
 

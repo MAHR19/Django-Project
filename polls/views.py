@@ -11,9 +11,6 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from .forms import UserForm
 from pdb import set_trace
-import pandas as pd
-
-
 
 
 def login_user(request):
@@ -31,19 +28,21 @@ def login_user(request):
     else:
         return render(request, 'polls/login.html')
 
-@login_required
+"""@login_required
 def profileview(request):
 
-    votes_list = Vote.objects.filter(Voter_username=request.user.username).order_by('question_id')[:5]
+    votes_list = Vote.objects.filter(Voter_username=request.user.username).order_by('question_id')[:5]"""
 
 
     #num_questions = Vote.objects.annotate(num=Count('question'))
-    return render(request, 'polls/myprofile.html', {'votes_list':votes_list,})
+    #return render(request, 'polls/myprofile.html', {'votes_list':votes_list,})
+
+
+
 
 @login_required
 def detailVoteView(request):
     user = request.user.username
-
 
 @login_required
 def logoutView(request):
@@ -56,8 +55,6 @@ def allvotesview(request):
     votes_list = Vote.objects.filter(Voter_username=request.user.username).order_by('question_id')
 
 
-
-
 def RegistrationView(request):
     #template = loader.get_template('polls/registration.html')
     if request.method == 'POST':
@@ -68,6 +65,17 @@ def RegistrationView(request):
     else:
         form = UserForm()
     return render(request, 'polls/registration.html',{'User_Form': form,} )
+
+
+
+class ProfileView(generic.ListView):
+    template_name = 'polls/myprofile.html'
+    context_object_name = 'votes_list'
+
+
+    def get_queryset(self):
+        votes_list = Vote.objects.filter(Voter_username=self.request.user.username).order_by('question_id')[:5]
+        return votes_list
 
 
 
@@ -101,7 +109,7 @@ class DetailView(generic.DetailView):
         Excludes any questions that aren't published yet.
         """
         return Question.objects.filter(pub_date__lte=timezone.now())
-        
+
 
 class ResultsView(generic.DetailView):
     model = Question
@@ -140,3 +148,21 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
         #return redirect('polls:results', question_id)
+
+
+
+def deletevoteview(request):
+
+    if request.method == 'POST':
+        vote_id = request.POST['vote'] #obtenemos el id del objeto del modelo Vote
+        vote_detail = get_object_or_404(Vote, pk=vote_id)#obtenemos el objeto
+        question = vote_detail.question.id
+        choice = vote_detail.choice.id
+        #antes de eliminar quitamos un voto del modelo choice
+        selected_choice = Choice.objects.get(pk=choice)
+        selected_choice.votes = selected_choice.votes-1
+        selected_choice.save()
+        #eliminamos el objeto en el modelo de Vote
+        vote_detail.delete()
+
+    return redirect('polls:my_profile')

@@ -13,20 +13,22 @@
 
   <div class="container-fluid p-0 ">
       <nav class="navbar navbar-expand-sm bg-dark navbar-dark shadow-sm">
-        <a class="navbar-brand ali m-2" href="{% url 'polls:index' %}"> POLLS </a>
+        <li class="nav-item m-1">
+          <a class="navbar-brand ali " href="{% url 'polls:index' %}"> POLLS </a>
+        </li>
       </nav>
   </div>
 
   <div class="d-flex justify-content-center p-3">
-    <h2 class="h2">REGISTRATION</h2>
+    <h2 class="h2 text">REGISTRATION</h2>
   </div>
 
   <div class="d-flex justify-content-center p-3">
-    <h2 class="h2">Please fill the next form</h2>
+    <h2 class="h4">Please fill the next form</h2>
   </div>
 
   <div class="d-flex justify-content-center p-5">
-      <form class="border p-4" enctype="multipart/form-data" method="post">
+      <form action="" class="border p-4" enctype="multipart/form-data" method="post">
       {% csrf_token %}
       <div class="mb-3">
         <label class="form-label m-1">Username</label>
@@ -40,7 +42,7 @@
         <label class="form-label m-1">Password</label>
         {%render_field User_Form.password class+="form-control" %}
       </div>
-      <input class="btn btn-dark"type="submit" name="" value="Register">
+      <input class="btn btn-dark"type="submit" name="" value="Sign in">
       <div class="d-flex justify-content-end">
         <a href="{% url 'polls:login_user' %}" class="text-muted">already register? Login</a>
       </div>
